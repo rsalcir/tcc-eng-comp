@@ -1,26 +1,26 @@
+//Teste da Shield GSM Realizando Uma Ligação
 #include "SIM900.h"
 #include <SoftwareSerial.h>
 #include "call.h"
  
 CallGSM call;
+#define botao 8
  
 void setup()
 {
+   pinMode(botao,INPUT);
    Serial.begin(9600);
-     Serial.println("Testando GSM Shield...");
-     pinMode(8,INPUT);
-     if (gsm.begin(2400))
-          Serial.println("nstatus=READY");
-     else Serial.println("nstatus=IDLE");
+   gsm.begin(2400);
 }
  
 void loop(){
-  if(digitalRead(8)==HIGH){
-      Serial.println("ligando");
+  Serial.println("Testando GSM Shield...");
+  if(digitalRead(botao)==HIGH){
+      Serial.println("ligando para 92874764");
       call.Call("92874764");
-       if(digitalRead(8)==HIGH){
-          Serial.println("desligando");
-          call.HangUp();
-       }
+      delay(10000);
+      Serial.println("Encerrando a chamada");
+      call.HangUp();
   }
 }
+
