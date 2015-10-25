@@ -62,10 +62,7 @@ void encerraUmaChamada(){
 
 void loop()
 {
-  byte position;
-char *phone_number;
-
-  gsm.GetPhoneNumber(position,phone_number);
+ 
   char *numeroTelefonico = "909092874764";
   if(conectadoARedeGSM){
     escreveNoDisplay("Sistema","Ativado");
