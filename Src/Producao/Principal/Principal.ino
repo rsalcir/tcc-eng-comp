@@ -71,21 +71,21 @@ boolean existeAlgumSMSNoSIMCard(){
  return (int)posicao>0 && (int)posicao<=20;
 }
 
-boolean telefoneDoSMSEstaCadastrado(){
+boolean telefoneQueEnviouOSMSEstaCadastrado(){
  char *telefoneCadastrado = "+556792874764"; 
  return strstr(telefoneDoSMS,telefoneCadastrado);
 }
 
-boolean textoDoSMSContemCodigoDaFechadura(){
+boolean textoDoSMSContemCodigoDeAberturaDaFechadura(){
  char *codigoDaFechadura = "123";
  return strstr(textoDoSMS,codigoDaFechadura);
 }
 
-void analisaSMS(){
+void verificarSeRecebeuSMS(){
   if(existeAlgumSMSNoSIMCard()){
      textoDoSMS[0]='\0';
      sms.GetSMS((int)posicao,telefoneDoSMS,textoDoSMS,180);
-     if(telefoneDoSMSEstaCadastrado()){
+     if(telefoneQueEnviouOSMSEstaCadastrado()){
         analisaTextoDoSMS();
         deletaSMS();
       }else{
@@ -97,16 +97,16 @@ void analisaSMS(){
 }
 
 void analisaTextoDoSMS(){
-  if(textoDoSMSContemCodigoDaFechadura()){
+  if(textoDoSMSContemCodigoDeAberturaDaFechadura()){
     escreveNoDisplay("Abrindo","Fechadura");
-    abrirFechadura();
+    abreAFechadura();
    }else{
     escreveNoDisplay("Codigo","Invalido");
     }
   deletaSMS();
 }
 
-void abrirFechadura(){
+void abreAFechadura(){
    for (int i=0; i<10; i++){
      digitalWrite(fechadura,HIGH);
      delay(100);
@@ -121,22 +121,22 @@ void deletaSMS(){
 
 void loop()
 {
- if(alarmeAtivado()){
-   char *numeroTelefonico = "909092874764";
-  if(conectadoARedeGSM){
-     escreveNoDisplay("Sistema","Ativado");
-     delay(1000);
-       if(atendeuAChamada == false && botaoFoiPressionado()){
-          escreveNoDisplay("Ligando para",numeroTelefonico);
-          realizaUmaChamada(numeroTelefonico);
-          atendeuAChamada = true;
-       }else if(atendeuAChamada && botaoFoiPressionado()) {
-          escreveNoDisplay("Encerrando","chamada");
-          encerraUmaChamada();
-          atendeuAChamada = false;
-       }      
-     analisaSMS();
-  }
+  if(alarmeAtivado()){
+    char *numeroTelefonico = "909092874764";
+    if(conectadoARedeGSM){
+        escreveNoDisplay("Sistema","Ativado");
+        delay(1000);
+          if(atendeuAChamada == false && botaoFoiPressionado()){
+            escreveNoDisplay("Ligando para",numeroTelefonico);
+            realizaUmaChamada(numeroTelefonico);
+            atendeuAChamada = true;
+          }else if(atendeuAChamada && botaoFoiPressionado()) {
+            escreveNoDisplay("Encerrando","chamada");
+            encerraUmaChamada();
+            atendeuAChamada = false;
+           }      
+       verificarSeRecebeuSMS();
+     }
  } else{
     escreveNoDisplay("Sistema","Desativado");
     delay(100);
