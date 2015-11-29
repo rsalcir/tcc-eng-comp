@@ -9,10 +9,12 @@ CallGSM call;
 SMSGSM sms;
 boolean conectadoARedeGSM = false;
 boolean atendeuAChamada = false;
+boolean interfone = false;
 LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7,3, POSITIVE);
 
 #define botaoDaCampainha 13
 #define fechadura 12
+#define alarme 11
 
 char pos;
 char message[180];
@@ -28,6 +30,7 @@ void escreveNoDisplay(String primeiraLinha, String segundaLinha){
 
 void configuraEntradasESaidas(){
   pinMode(botaoDaCampainha,INPUT);
+  pinMode(alarme,INPUT);
   pinMode(fechadura, OUTPUT);
 }
 
@@ -60,9 +63,13 @@ void encerraUmaChamada(){
  call.HangUp();
 }
 
+boolean alarmeLigado(){
+return digitalRead(alarme)==HIGH;
+}
+
 void loop()
 {
- 
+ if(alarmeLigado()){
   char *numeroTelefonico = "909092874764";
   if(conectadoARedeGSM){
     escreveNoDisplay("Sistema","Ativado");
@@ -77,8 +84,6 @@ void loop()
        encerraUmaChamada();
        atendeuAChamada = false;
      }
-
- 
         pos=sms.IsSMSPresent(SMS_UNREAD);
 
        if((int)pos>0 && (int)pos<=20) {
@@ -97,6 +102,10 @@ void loop()
              }
           }
        }
+  }
+ } else{
+    escreveNoDisplay("Sistema","Desativado");
+    delay(1000);
   }
 }
 
