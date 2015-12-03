@@ -11,12 +11,22 @@ boolean conectadoARedeGSM = false;
 boolean atendeuAChamada = false;
 LiquidCrystal_I2C lcd(0x27,2,1,0,4,5,6,7,3, POSITIVE);
 
+<<<<<<< HEAD
 #define botaoDaCampainha 13
 #define fechadura 12
 
 char pos;
 char message[180];
 char number[13];
+=======
+char posicao;
+char textoDoSMS[180];
+char telefoneDoSMS[13];
+
+#define botaoDaCampainha 13
+#define fechadura 12
+#define alarme 11
+>>>>>>> f962162c0d72b1bc997d826cd027e858b55bbb88
 
 void escreveNoDisplay(String primeiraLinha, String segundaLinha){
    lcd.clear();
@@ -28,6 +38,10 @@ void escreveNoDisplay(String primeiraLinha, String segundaLinha){
 
 void configuraEntradasESaidas(){
   pinMode(botaoDaCampainha,INPUT);
+<<<<<<< HEAD
+=======
+  pinMode(alarme,INPUT);
+>>>>>>> f962162c0d72b1bc997d826cd027e858b55bbb88
   pinMode(fechadura, OUTPUT);
 }
 
@@ -48,6 +62,13 @@ void setup()
   conectadoARedeGSM = verificaConexaoComARedeGSM();
 }
 
+<<<<<<< HEAD
+=======
+boolean alarmeAtivado(){
+ return digitalRead(alarme)==HIGH;
+}
+
+>>>>>>> f962162c0d72b1bc997d826cd027e858b55bbb88
 boolean botaoFoiPressionado(){
  return digitalRead(botaoDaCampainha)==HIGH;
 }
@@ -60,6 +81,7 @@ void encerraUmaChamada(){
  call.HangUp();
 }
 
+<<<<<<< HEAD
 void loop()
 {
  
@@ -97,6 +119,82 @@ void loop()
              }
           }
        }
+=======
+boolean existeAlgumSMSNoSIMCard(){
+ posicao =  sms.IsSMSPresent(SMS_UNREAD);
+ return (int)posicao>0 && (int)posicao<=20;
+}
+
+boolean telefoneQueEnviouOSMSEstaCadastrado(){
+ char *telefoneCadastrado = "+556792874764"; 
+ return strstr(telefoneDoSMS,telefoneCadastrado);
+}
+
+boolean textoDoSMSContemCodigoDeAberturaDaFechadura(){
+ char *codigoDaFechadura = "123";
+ return strstr(textoDoSMS,codigoDaFechadura);
+}
+
+void verificarSeRecebeuSMS(){
+  if(existeAlgumSMSNoSIMCard()){
+     textoDoSMS[0]='\0';
+     sms.GetSMS((int)posicao,telefoneDoSMS,textoDoSMS,180);
+     if(telefoneQueEnviouOSMSEstaCadastrado()){
+        analisaTextoDoSMS();
+        deletaSMS();
+      }else{
+        escreveNoDisplay("Telefone Nao","Cadastrado");
+        delay(100);
+        deletaSMS();
+       }
+    }
+}
+
+void analisaTextoDoSMS(){
+  if(textoDoSMSContemCodigoDeAberturaDaFechadura()){
+    escreveNoDisplay("Abrindo","Fechadura");
+    abreAFechadura();
+   }else{
+    escreveNoDisplay("Codigo","Invalido");
+    }
+  deletaSMS();
+}
+
+void abreAFechadura(){
+   for (int i=0; i<10; i++){
+     digitalWrite(fechadura,HIGH);
+     delay(100);
+     digitalWrite(fechadura,LOW);
+     delay(100);
+   }
+}
+
+void deletaSMS(){
+  sms.DeleteSMS(posicao);
+}  
+
+void loop()
+{
+  if(alarmeAtivado()){
+    char *numeroTelefonico = "909092874764";
+    if(conectadoARedeGSM){
+        escreveNoDisplay("Sistema","Ativado");
+        delay(1000);
+          if(atendeuAChamada == false && botaoFoiPressionado()){
+            escreveNoDisplay("Ligando para",numeroTelefonico);
+            realizaUmaChamada(numeroTelefonico);
+            atendeuAChamada = true;
+          }else if(atendeuAChamada && botaoFoiPressionado()) {
+            escreveNoDisplay("Encerrando","chamada");
+            encerraUmaChamada();
+            atendeuAChamada = false;
+           }      
+       verificarSeRecebeuSMS();
+     }
+ } else{
+    escreveNoDisplay("Sistema","Desativado");
+    delay(100);
+>>>>>>> f962162c0d72b1bc997d826cd027e858b55bbb88
   }
 }
 
