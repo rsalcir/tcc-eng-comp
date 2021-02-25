@@ -1,7 +1,9 @@
 # Projeto Eng. de Computação
 
 # Objetivo:
-Projeto utilizado para conclusão do curso de Eng. de Computação 2011 - 2015
+Projeto utilizado para conclusão do curso de Eng. de Computação 2011 - 2015, trata-se de um protótipo de interfone
+residencial onde será possível realizar o atendimento e acionamento a distância através de um
+aparelho de telefone celular, por meio do recebimento de ligações e envio e recebimento de sms.
 
 # Estrutura do projeto
 ```
