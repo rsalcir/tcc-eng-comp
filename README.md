@@ -1,4 +1,4 @@
-# TCC
+# Projeto Eng. de Computação
 
 # Objetivo:
 Projeto utilizado para conclusão do curso de Eng. de Computação 2011 - 2015
